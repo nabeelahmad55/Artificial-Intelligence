@@ -104,3 +104,113 @@ print("Length:", len(longest))
 c = float(input("Enter temperature in Celsius: "))
 f = (c * 9/5) + 32
 print("Fahrenheit:", f)
+
+
+
+#Find All Prime Numbers in a Range (Sieve of Eratosthenes)
+
+n = int(input("Find primes up to: "))
+
+sieve = [True] * (n + 1)
+p = 2
+
+while p * p <= n:
+    if sieve[p]:
+        for i in range(p * p, n + 1, p):
+            sieve[i] = False
+    p += 1
+
+primes = [i for i in range(2, n + 1) if sieve[i]]
+print("Prime numbers:", primes)
+
+
+
+#Find Pairs in a List That Sum to a Target
+
+numbers = list(map(int, input("Enter numbers: ").split()))
+target = int(input("Target sum: "))
+
+seen = {}
+pairs = []
+
+for num in numbers:
+    diff = target - num
+    if diff in seen:
+        pairs.append((diff, num))
+    seen[num] = True
+
+print("Pairs with target sum:", pairs)
+
+
+
+#Find Longest Palindrome Substring
+
+def longest_palindrome(s):
+    if len(s) < 2:
+        return s
+
+    def expand(l, r):
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            l -= 1
+            r += 1
+        return s[l+1:r]
+
+    longest = ""
+
+    for i in range(len(s)):
+        # odd-length palindromes
+        p1 = expand(i, i)
+        # even-length palindromes
+        p2 = expand(i, i + 1)
+
+        longest = max(longest, p1, p2, key=len)
+
+    return longest
+
+text = input("Enter string: ")
+print("Longest palindrome substring:", longest_palindrome(text))
+
+
+#Check Balanced Parentheses Using Stack
+
+def is_balanced(expr):
+    stack = []
+    pairs = {')': '(', '}': '{', ']': '['}
+
+    for ch in expr:
+        if ch in "({[":
+            stack.append(ch)
+        elif ch in ")}]":
+            if not stack or stack[-1] != pairs[ch]:
+                return False
+            stack.pop()
+
+    return len(stack) == 0
+
+expr = input("Enter expression: ")
+print("Balanced" if is_balanced(expr) else "Not balanced")
+
+
+#Binary Search (Iterative)
+
+
+def binary_search(arr, target):
+    low, high = 0, len(arr) - 1
+
+    while low <= high:
+        mid = (low + high) // 2
+
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            low = mid + 1
+        else:
+            high = mid - 1
+
+    return -1
+
+arr = list(map(int, input("Enter sorted numbers: ").split()))
+x = int(input("Number to search: "))
+
+index = binary_search(arr, x)
+print("Found at index:", index if index != -1 else "Not found")
