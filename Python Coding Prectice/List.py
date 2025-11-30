@@ -214,3 +214,44 @@ x = int(input("Number to search: "))
 
 index = binary_search(arr, x)
 print("Found at index:", index if index != -1 else "Not found")
+
+#Word Ladder (Shortest Transformation Sequence)
+
+from collections import deque
+
+def word_ladder(begin, end, word_list):
+    if end not in word_list:
+        return 0
+    
+    word_set = set(word_list)
+    queue = deque([(begin, 1)])  # (current_word, steps)
+
+    while queue:
+        word, steps = queue.popleft()
+
+        if word == end:
+            return steps
+
+        for i in range(len(word)):
+            for ch in "abcdefghijklmnopqrstuvwxyz":
+                new_word = word[:i] + ch + word[i+1:]
+
+                if new_word in word_set:
+                    word_set.remove(new_word)  # avoid revisits
+                    queue.append((new_word, steps + 1))
+
+    return 0  # no transformation possible
+
+
+# ----------- Run Program -------------
+begin = input("Enter begin word: ")
+end = input("Enter end word: ")
+word_list = input("Enter dictionary words (space separated): ").split()
+
+result = word_ladder(begin, end, word_list)
+
+if result == 0:
+    print("No transformation possible.")
+else:
+    print("Shortest transformation steps:", result)
+
