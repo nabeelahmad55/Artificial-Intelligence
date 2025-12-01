@@ -255,3 +255,56 @@ if result == 0:
 else:
     print("Shortest transformation steps:", result)
 
+
+
+#N-Queens Problem (Return All Solutions)
+
+    def solve_n_queens(n):
+    solutions = []
+    board = ["." * n for _ in range(n)]
+
+    cols = set()        # attacked columns
+    diag1 = set()       # r - c
+    diag2 = set()       # r + c
+
+    def backtrack(r):
+        if r == n:
+            solutions.append(board.copy())
+            return
+
+        for c in range(n):
+            if c in cols or (r - c) in diag1 or (r + c) in diag2:
+                continue
+
+            cols.add(c)
+            diag1.add(r - c)
+            diag2.add(r + c)
+
+            row_list = list(board[r])
+            row_list[c] = "Q"
+            board[r] = "".join(row_list)
+
+            backtrack(r + 1)
+
+            cols.remove(c)
+            diag1.remove(r - c)
+            diag2.remove(r + c)
+
+            row_list[c] = "."
+            board[r] = "".join(row_list)
+
+    backtrack(0)
+    return solutions
+
+
+# ----------- Run Program -------------
+n = int(input("Enter value of N (e.g., 4, 8): "))
+result = solve_n_queens(n)
+
+print(f"Total solutions: {len(result)}\n")
+for sol in result:
+    for row in sol:
+        print(row)
+    print()
+
+
