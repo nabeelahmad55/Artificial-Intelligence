@@ -308,3 +308,60 @@ for sol in result:
     print()
 
 
+
+    #Sudoku Solver (Backtracking + Constraint Checking)
+
+def is_valid(board, r, c, num):
+    # Check row
+    if num in board[r]:
+        return False
+
+    # Check column
+    for i in range(9):
+        if board[i][c] == num:
+            return False
+
+    # Check 3×3 box
+    box_r = (r // 3) * 3
+    box_c = (c // 3) * 3
+
+    for i in range(box_r, box_r + 3):
+        for j in range(box_c, box_c + 3):
+            if board[i][j] == num:
+                return False
+
+    return True
+
+
+def solve_sudoku(board):
+    for r in range(9):
+        for c in range(9):
+            if board[r][c] == 0:
+                for num in range(1, 10):
+                    if is_valid(board, r, c, num):
+                        board[r][c] = num
+
+                        if solve_sudoku(board):
+                            return True
+
+                        board[r][c] = 0  # backtrack
+                return False
+    return True
+
+
+# ---------- Run Program -------------
+print("Enter Sudoku row by row (use 0 for empty cells):")
+
+board = []
+for _ in range(9):
+    row = list(map(int, input().split()))
+    board.append(row)
+
+if solve_sudoku(board):
+    print("\nSolved Sudoku:")
+    for row in board:
+        print(row)
+else:
+    print("No solution exists.")
+
+
