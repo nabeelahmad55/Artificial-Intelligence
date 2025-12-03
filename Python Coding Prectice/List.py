@@ -365,3 +365,46 @@ else:
     print("No solution exists.")
 
 
+
+
+#Edit Distance (Levenshtein Distance)
+
+
+
+def edit_distance(s1, s2):
+    memo = {}
+
+    def dp(i, j):
+        # If already solved
+        if (i, j) in memo:
+            return memo[(i, j)]
+
+        # If s1 is finished, we need to insert remaining chars of s2
+        if i == len(s1):
+            return len(s2) - j
+
+        # If s2 is finished, we need to delete remaining chars of s1
+        if j == len(s2):
+            return len(s1) - i
+
+        # If characters match: move to next
+        if s1[i] == s2[j]:
+            ans = dp(i + 1, j + 1)
+        else:
+            insert = 1 + dp(i, j + 1)
+            delete = 1 + dp(i + 1, j)
+            replace = 1 + dp(i + 1, j + 1)
+
+            ans = min(insert, delete, replace)
+
+        memo[(i, j)] = ans
+        return ans
+
+    return dp(0, 0)
+
+
+# ----------- Run Program -------------
+s1 = input("Enter first string: ")
+s2 = input("Enter second string: ")
+
+print("Minimum Edit Distance:", edit_distance(s1, s2))
