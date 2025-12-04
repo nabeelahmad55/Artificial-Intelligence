@@ -408,3 +408,57 @@ s1 = input("Enter first string: ")
 s2 = input("Enter second string: ")
 
 print("Minimum Edit Distance:", edit_distance(s1, s2))
+
+
+
+#Course Schedule (Detect Cycle in Directed Graph)
+
+
+
+def can_finish(numCourses, prerequisites):
+    graph = {i: [] for i in range(numCourses)}
+
+    for a, b in prerequisites:
+        graph[b].append(a)
+
+    visited = set()
+    cycle = set()
+
+    def dfs(course):
+        if course in cycle:
+            return False  # cycle detected
+
+        if course in visited:
+            return True
+
+        cycle.add(course)
+
+        for neighbor in graph[course]:
+            if not dfs(neighbor):
+                return False
+
+        cycle.remove(course)
+        visited.add(course)
+        return True
+
+    for c in range(numCourses):
+        if not dfs(c):
+            return False
+
+    return True
+
+
+# ----------- Run Program -------------
+num = int(input("Enter number of courses: "))
+print("Enter prerequisites like: a b (a depends on b), one pair per line.")
+print("Enter 'done' when finished.")
+
+prereq = []
+while True:
+    line = input()
+    if line.lower() == "done":
+        break
+    a, b = map(int, line.split())
+    prereq.append([a, b])
+
+print("Can complete all courses:", can_finish(num, prereq))
