@@ -462,3 +462,105 @@ while True:
     prereq.append([a, b])
 
 print("Can complete all courses:", can_finish(num, prereq))
+
+
+
+#Problem: Detect Overlapping Time Intervals & Merge Them
+
+def to_minutes(t):
+    """Convert HH:MM to total minutes."""
+    h, m = map(int, t.split(":"))
+    return h * 60 + m
+
+def to_timestr(minutes):
+    """Convert total minutes back to HH:MM."""
+    return f"{minutes//60:02d}:{minutes%60:02d}"
+
+def merge_intervals(intervals):
+    # Convert intervals to minute-based integers
+    converted = [(to_minutes(s), to_minutes(e)) for s, e in intervals]
+    
+    # Sort by start time
+    converted.sort(key=lambda x: x[0])
+    
+    merged = []
+    for start, end in converted:
+        if not merged or start > merged[-1][1]:
+            merged.append([start, end])
+        else:
+            merged[-1][1] = max(merged[-1][1], end)
+    
+    # Convert back to time strings
+    return [(to_timestr(s), to_timestr(e)) for s, e in merged]
+
+
+# Example
+intervals = [
+    ("09:00", "11:30"),
+    ("10:45", "12:00"),
+    ("13:00", "14:00"),
+    ("13:30", "15:00"),
+    ("16:00", "17:00")
+]
+
+print(merge_intervals(intervals))
+
+
+
+#Complex Python Problem: Dependency Resolver (Topological Sorting with Cycle Detection)
+
+
+
+from collections import defaultdict
+
+def resolve_dependencies(dependencies):
+    graph = defaultdict(list)
+    visited = {}
+    order = []
+
+    # Build adjacency list
+    for pkg, dep in dependencies:
+        graph[dep].append(pkg)
+
+    def dfs(node, stack):
+        visited[node] = "visiting"
+        stack.append(node)
+
+        for nei in graph[node]:
+            if visited.get(nei) == "visiting":
+                cycle_start = stack.index(nei)
+                cycle = stack[cycle_start:] + [nei]
+                raise Exception("Cycle detected: " + " -> ".join(cycle))
+
+            if visited.get(nei) != "visited":
+                dfs(nei, stack)
+
+        visited[node] = "visited"
+        order.append(node)
+        stack.pop()
+
+    # Run DFS for all unique nodes
+    nodes = set([d for _, d in dependencies] + [p for p, _ in dependencies])
+
+    for node in nodes:
+        if visited.get(node) != "visited":
+            dfs(node, [])
+
+    return order[::-1]   # reverse for correct topological order
+
+
+# Example usage:
+dependencies = [
+    ("A", "B"),
+    ("B", "C"),
+    ("C", "E"),
+    ("D", "E"),
+    ("F", "A")
+]
+
+try:
+    result = resolve_dependencies(dependencies)
+    print("Valid installation order:", result)
+except Exception as e:
+    print(str(e))
+
